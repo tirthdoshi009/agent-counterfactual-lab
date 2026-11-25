@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 name = "agent-boundary-lab"
 version = "0.1.0"
 description = "Synthetic, scripted HTTP/MCP authorization boundary lab"
+license = { file = "LICENSE" }
 requires-python = ">=3.12,<3.13"
 dependencies = [
   "mcp==1.26.0",

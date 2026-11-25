@@ -4,6 +4,9 @@
 !/.dockerignore
 !/Dockerfile
 !/README.md
+!/LICENSE
+!/CONTRIBUTING.md
+!/SECURITY.md
 !/pyproject.toml
 !/uv.lock
 !/lab/
@@ -22,7 +25,6 @@
 !/fixtures/workspace.json
 /tests/*
 !/tests/*.py
-!/tests/test_azure_guards.ps1
 
 **/__pycache__/
 **/*.pyc

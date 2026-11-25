@@ -1,9 +1,8 @@
 # Agent Counterfactual Lab
 
-**Private staging, not a public release.** This source-only copy contains generated
-synthetic lab code and public dependency references. Public distribution, rightsholder
-confirmation and a project license remain pending. No license or copyright ownership
-grant is asserted.
+An open-source, synthetic research harness released under the [MIT license](LICENSE).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contributions and [SECURITY.md](SECURITY.md)
+for private vulnerability reporting.
 
 A small prompt-injection counterfactual harness: give an assistant a fictional document
 and simulated-email task, compare original injected content with manual interventions,
@@ -34,12 +33,18 @@ deliberately omitted from this repository.
 Python 3.12 is required. Package downloads are an explicit setup step:
 
 ```powershell
+git clone https://github.com/tirthdoshi009/agent-counterfactual-lab.git
+Set-Location agent-counterfactual-lab
 python -m pip install --index-url https://pypi.org/simple uv==0.9.11
 uv sync --frozen --extra test
 & '.\.venv\Scripts\python.exe' -m lab counterfactual `
     --provider deterministic-fake --output '.\counterfactual-results' --trials 2
 & '.\.venv\Scripts\python.exe' -m pytest -q tests
 ```
+
+On Linux/macOS, replace the environment interpreter with `.venv/bin/python` and
+use ordinary shell line continuation. The fake demonstration needs no provider account,
+container engine, cloud resources or model spending.
 
 The lock pins 38 registry dependencies with public artifact URLs and hashes. The Python
 package/import name remains `agent-boundary-lab` / `lab`.
@@ -145,9 +150,13 @@ operational evidence is not included.
 
 ## Distribution and dependencies
 
-No project LICENSE is supplied pending authorization. Dependencies are referenced, not
-vendored or relicensed. Metadata identifies mainly MIT/BSD/Apache/PSF-family licenses,
+The [MIT license](LICENSE) covers project-authored source, not third-party dependencies
+or base images. Dependencies are referenced, not vendored or relicensed.
+Metadata identifies mainly MIT/BSD/Apache/PSF-family licenses,
 with `certifi` under MPL-2.0, `cryptography` under Apache-2.0 OR BSD-3-Clause and
 `packaging` under Apache-2.0 OR BSD-2-Clause. Review applicable licenses/notices,
-file-level obligations and bundled native/base-image components before redistributing
-dependencies, wheels or images. Metadata is not a full provenance/legal review.
+file-level obligations (including certifi's MPL-2.0 requirements) and bundled native/
+base-image components before redistributing dependencies, wheels or images.
+Python/OS/build-tool license and notice requirements also apply to redistributed images.
+This source release does not distribute dependency binaries or container images;
+metadata is not a full provenance/legal review.
