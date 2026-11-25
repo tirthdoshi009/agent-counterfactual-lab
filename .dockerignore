@@ -1,0 +1,15 @@
+.venv
+.git
+.pytest_cache
+.ruff_cache
+**/__pycache__
+results
+.env
+.env.*
+**/*.pem
+**/*.key
+**/provisioning-key*
+**/*resource-manifest*.json
+**/*.log
+deploy
+tests

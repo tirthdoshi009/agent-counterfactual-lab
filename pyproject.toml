@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-boundary-lab"
+version = "0.1.0"
+description = "Synthetic, scripted HTTP/MCP authorization boundary lab"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "mcp==1.26.0",
+  "starlette==0.49.3",
+  "uvicorn==0.38.0",
+  "httpx==0.28.1",
+  "pydantic==2.12.4",
+  "cryptography==46.0.3",
+]
+
+[project.optional-dependencies]
+test = ["pytest==8.4.2", "pytest-asyncio==1.3.0", "ruff==0.14.6"]
+
+[project.scripts]
+boundary-lab = "lab.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["lab"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
