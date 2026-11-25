@@ -135,14 +135,14 @@ class BrokerSupervisor(Supervisor):
             or not re.fullmatch(r"[a-zA-Z0-9_-]{1,15}", interface)
         ):
             raise IsolationError("Unexpected owned broker bridge")
-        addresses = json.loads(command(["ip", "-j", "address", "show", "dev", interface]))
-        assigned = [a["local"] for n in addresses for a in n.get("addr_info", [])]
-        if BROKER not in assigned:
-            command(["ip", "address", "add", BROKER + "/24", "dev", interface])
         options = container_options("adapter", self.image, self.names["adapter"])
         options += ["--network", f"{name}:ip={ADAPTER}", self.image, "start", "runner"]
         podman(*options)
         self.containers.append(self.names["adapter"])
+        addresses = json.loads(command(["ip", "-j", "address", "show", "dev", interface]))
+        assigned = [a["local"] for n in addresses for a in n.get("addr_info", [])]
+        if BROKER not in assigned:
+            command(["ip", "address", "add", BROKER + "/24", "dev", interface])
         self.inspect_config("adapter", self.output, {"broker": ADAPTER})
         if self.exec("adapter", "source")["source_hash"] != source_hash():
             raise IsolationError("Image source differs from broker supervisor source")

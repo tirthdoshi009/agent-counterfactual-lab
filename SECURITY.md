@@ -24,5 +24,6 @@ credential exposure, unsafe tool dispatch or incorrect evidence classification.
 
 Use only synthetic fixtures and local capture. Do not probe production systems,
 public destinations or unrelated hosts. Fail closed when isolation cannot be proven.
-Fake-provider/local transport tests do not establish native isolation or model safety;
-the new broker-profile native proof and real-model trials remain unverified.
+Fake-provider/local transport tests do not establish native isolation or model safety.
+A recorded native broker-profile proof covers only its exact source/image/host/profile;
+fresh actual proof is required for each live run. Real-model trials remain unverified.

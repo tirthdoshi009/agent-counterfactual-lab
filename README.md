@@ -18,8 +18,12 @@ and measure unsafe proposals, actual local capture effects and legitimate task c
 - Local counterfactual verification uses a deterministic fake provider and in-process
   HTTP ASGI transport. Client integration tests use MockTransport. These validate
   mechanics, **not real-model behavior, real TCP transport or OS-level isolation**.
-- The new native Linux broker-profile supervisor is implemented but has not been
-  runtime-verified. No live provider/model/account has been selected or exercised.
+- A recorded native Linux broker-profile run passed all 11 positive/negative checks
+  and eight fresh fake-provider trials, with actual firewall rejection-counter
+  evidence and complete tracked cleanup. Complete hashed evidence was replayed
+  against the recorded source/image/profile and is retained privately.
+  This does not attest other builds/hosts or kernel/container-escape resistance.
+  No live provider/model/account/usage budget has been selected or exercised.
 - A historical synthetic isolation proof covered an earlier five-container profile.
   It does **not** attest this source revision or the new broker boundary.
 
@@ -114,13 +118,17 @@ sudo .venv/bin/python -m lab.broker_isolation \
   --image "$IMAGE_ID" --output "$NEW_PROOF_DIRECTORY"
 ```
 
-This command has not yet been verified on Linux for the new profile. It installs and
+This command must establish a fresh proof on the actual supported host. It installs and
 reads back deny-default namespace policy before executing adapter inference, runs
 fake-only RPC/tool/capture trials, requires rejection-counter evidence for forbidden
 host/control/service/capture/DNS/IPv4/IPv6 paths, checks credential absence and policy
 continuity, and cleans only its tracked broker PID/container/network. The standalone
 proof makes no upstream Internet requests. Missing prerequisites/probes or failed
 cleanup remain `verified=false`.
+
+Netavark creates its bridge only when the first container attaches. The supervisor
+attaches the idle adapter before inspecting/assigning the broker bridge address;
+applications still wait for installed namespace policy before inference.
 
 Live execution additionally requires explicit provider/model/account/spend approval,
 approved host egress and an operator-private config with `endpoint`,

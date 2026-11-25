@@ -228,6 +228,56 @@ async def test_trusted_broker_evidence_detects_tampered_adapter_result():
         assert reconcile(trusted, observed)["evaluation"]["status"] == "inconclusive"
 
 
+def test_prepare_attaches_container_before_inspecting_lazy_netavark_bridge(monkeypatch, tmp_path):
+    from lab import broker_isolation as module
+
+    attached = False
+    assigned = False
+
+    def engine(*args, **kwargs):
+        nonlocal attached
+        if args[:2] == ("network", "inspect"):
+            return json.dumps([{
+                "internal": True, "dns_enabled": False, "driver": "bridge",
+                "ipv6_enabled": False, "network_interface": "podman1",
+            }])
+        if args[0] == "run":
+            attached = True
+        return ""
+
+    def host(args, **kwargs):
+        nonlocal assigned
+        if args[:4] == ["ip", "-j", "route", "show"]:
+            return "[]"
+        if args[:4] == ["ip", "-j", "address", "show"]:
+            assert attached, "netavark bridge is created lazily at container attachment"
+            return json.dumps([{"addr_info": []}])
+        if args[:3] == ["ip", "address", "add"]:
+            assigned = True
+        return ""
+
+    supervisor = BrokerSupervisor("sha256:" + "a" * 64, tmp_path, Budget())
+
+    def namespace(role, *args, **kwargs):
+        if args[:2] == ("nft", "-j"):
+            return json.dumps({"nftables": [
+                {"chain": {"name": name, "policy": "drop", "prio": -150}}
+                for name in ("input", "output")
+            ]})
+        if args[:2] == ("ip", "-j"):
+            return json.dumps([{"gateway": module.BROKER}])
+        return ""
+
+    monkeypatch.setattr(module, "podman", engine)
+    monkeypatch.setattr(module, "command", host)
+    monkeypatch.setattr(supervisor, "inspect_config", lambda *args: None)
+    monkeypatch.setattr(supervisor, "exec", lambda *args: {"source_hash": module.source_hash()})
+    monkeypatch.setattr(supervisor, "ns", namespace)
+    supervisor.prepare()
+    assert assigned and supervisor.containers == [supervisor.names["adapter"]]
+    assert all(supervisor.evidence["checks"].values())
+
+
 def test_changed_profile_is_separate_and_adapter_has_only_one_exact_broker_edge():
     old = nft_policy("adapter")
     assert "10.203.44." not in old
